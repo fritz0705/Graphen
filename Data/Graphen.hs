@@ -121,6 +121,7 @@ import Data.Maybe (isJust, fromJust)
 import Data.Monoid ((<>), Sum(Sum))
 import Data.Foldable (minimumBy)
 import Data.Function (on)
+import Data.Bifunctor (Bifunctor(..))
 
 -- | A Edge represents a connection between two objects, also called vertices.
 -- Any graph can be represented with a collection of edges.
@@ -369,6 +370,10 @@ instance Graph Gr where
 
 instance GraphFunctor Gr where
   vemap f g = Gr $ f <$> edges g
+
+instance Bifunctor Gr where
+  first = vmap
+  second = emap
 
 instance Monoid (Gr v e) where
   mempty = empty
