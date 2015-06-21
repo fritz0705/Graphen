@@ -20,6 +20,7 @@ When you want to install Graphen to your local Haskell installation, then use
 these steps:
 
 ::
+
   ~ $ git clone git://github.com/fritz0705/Graphen
   ~ $ cd Graphen
   Graphen $ cabal install
@@ -27,6 +28,7 @@ these steps:
 Alternatively, when you want to hack on the code, just replace the last step:
 
 ::
+
   Graphen $ cabal configure
   Graphen $ cabal repl
 
