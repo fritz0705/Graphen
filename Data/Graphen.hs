@@ -32,12 +32,15 @@ module Data.Graphen
     -- * Generic graph operations
   , (<+>)
   , (<->)
-  , isEmpty
   , outgoing
   , distanceColor
     -- ** Graph types
   , GraphType(Directed, Undirected, Mixed, Empty)
   , graphType
+  , isEmpty
+  , isDirected
+  , isUndirected
+  , isMixed
     -- * Adjacency lists implementation
   , Gr()
     -- * Edge constructors for graph context edge constructor lists
@@ -117,7 +120,7 @@ module Data.Graphen
   ) where
 
 import Data.List ((\\))
-import Data.Maybe (isJust, fromJust)
+import Data.Maybe (isJust)
 import Data.Monoid ((<>), Sum(Sum))
 import Data.Foldable (minimumBy)
 import Data.Function (on)
@@ -343,16 +346,20 @@ graphType gr
 isEmpty :: Graph gr => gr v e -> Bool
 isEmpty = (== Empty) . graphType
 
+-- | Return @True@ when the given graph has the `Directed` `GraphType`.
 isDirected :: Graph gr => gr v e -> Bool
 isDirected = (== Directed) . graphType
 
+-- | Return @True@ when the given graph has the `Undirected` `GraphType`.
 isUndirected :: Graph gr => gr v e -> Bool
 isUndirected = (== Undirected) . graphType
 
+-- | Return @True@ when the given graph has the `Mixed` `GraphType`.
 isMixed :: Graph gr => gr v e -> Bool
 isMixed = (== Mixed) . graphType
 
--- | Gr v e is a graph implemented by an adjacency list.
+-- | @Gr v e@ is a graph implemented by an adjacency list, where @v@ is the type
+-- of the vertices and @e@ is the type of the edge values.
 newtype Gr v e
   = Gr [Edge v e]
   deriving (Show, Read)
