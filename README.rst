@@ -32,6 +32,17 @@ Alternatively, when you want to hack on the code, just replace the last step:
   Graphen $ cabal configure
   Graphen $ cabal repl
 
+Documentation
+=============
+
+This library is well documented using haddock-style comments. Therefore you can
+just use haddock to generate a good API documentation.
+
+::
+
+  Graphen $ cabal configure
+  Graphen $ cabal haddock
+
 License
 =======
 
