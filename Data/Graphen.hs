@@ -503,7 +503,7 @@ eTouching v e w = v <~> w % e
 
 -- | Edge constructor for circular edges
 --
--- > eCircle e v
+-- >>> eCircle e v
 -- v <~> v % e
 eCircle :: e -> v -> Edge v e
 eCircle e v = v <~> v % e
