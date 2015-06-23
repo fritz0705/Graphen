@@ -47,6 +47,7 @@ module Data.Graphen
   , isMixed
     -- * Adjacency lists implementation
   , Gr()
+  , mkGr
     -- * Edge constructors for graph context edge constructor lists
   , eOutgoing
   , eIncoming
@@ -393,6 +394,10 @@ isMixed = (== Mixed) . graphType
 newtype Gr v e
   = Gr [Edge v e]
   deriving (Show, Read)
+
+-- | Similar to `fromEdges`, but also accepts vertices without `Eq` instance.
+mkGr :: [Edge v e] -> Gr v e
+mkGr = Gr
 
 instance (Eq v, Eq e) => Eq (Gr v e) where
   (Gr v) == (Gr w) = v == w
