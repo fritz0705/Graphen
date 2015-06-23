@@ -52,7 +52,7 @@ module Data.Graphen
   , eOutgoing
   , eIncoming
   , eTouching
-  , eCircle
+  , eLoop
     -- * Topological sort and cycle detection
   , tweight
     -- * Dijkstra's algorithm
@@ -537,9 +537,9 @@ eIncoming v e w = v ~~> w % e
 eTouching :: v -> e -> v -> Edge v e
 eTouching v e w = v <~> w % e
 
--- | Edge constructor for circular edges
+-- | Edge constructor for loop edges
 --
--- >>> eCircle e v
+-- >>> eLoop e v
 -- v <~> v % e
-eCircle :: e -> v -> Edge v e
-eCircle e v = v <~> v % e
+eLoop :: e -> v -> Edge v e
+eLoop e v = v <~> v % e
