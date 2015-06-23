@@ -350,6 +350,7 @@ outgoing :: (Graph gr, Eq v) => gr v e -> v -> [Edge v e]
 outgoing gr v
   = filter (`isSource` v) $ edges gr
 
+-- | Find all incoming edges to a given vertex
 incoming :: (Graph gr, Eq v) => gr v e -> v -> [Edge v e]
 incoming gr v
   = filter (`isDestination` v) $ edges gr
