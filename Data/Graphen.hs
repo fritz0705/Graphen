@@ -49,6 +49,7 @@ module Data.Graphen
   , Gr()
   , mkGr
     -- * Edge constructors for graph context edge constructor lists
+  , EdgeCons
   , eOutgoing
   , eIncoming
   , eTouching
@@ -519,27 +520,31 @@ dijkstra gr src dst
   where
     gr' = emap Sum gr
 
+-- | Edge constructors are functions, which take the remaining vertex of the
+-- `Context` and return the complete `Edge` value.
+type EdgeCons v e = v -> Edge v e
+
 -- | Edge constructor for outgoing directed edges
 --
 -- > eOutgoing v e w = w ~~> v % e
-eOutgoing :: v -> e -> v -> Edge v e
+eOutgoing :: v -> e -> EdgeCons v e
 eOutgoing v e w = w ~~> v % e
 
 -- | Edge constructor for incoming directed edges
 --
 -- > eIncoming v e w = v ~~> w % e
-eIncoming :: v -> e -> v -> Edge v e
+eIncoming :: v -> e -> EdgeCons v e
 eIncoming v e w = v ~~> w % e
 
 -- | Edge constructor for undirected edges
 --
 -- > eTouching v e w = v <~> w % e
-eTouching :: v -> e -> v -> Edge v e
+eTouching :: v -> e -> EdgeCons v e
 eTouching v e w = v <~> w % e
 
 -- | Edge constructor for loop edges
 --
 -- >>> eLoop e v
 -- v <~> v % e
-eLoop :: e -> v -> Edge v e
+eLoop :: e -> EdgeCons v e
 eLoop e v = v <~> v % e
