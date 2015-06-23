@@ -14,13 +14,16 @@ module Data.Graphen
   , (%)
   , isDir
   , isUndir
+  , isSource
+  , isDestination
+  , isLoop
   , leftVertex
   , rightVertex
   , color
+  , decolor
   , edgeContainsVertex
   , edgeToList
   , edgeToDot
-  , decolor
   , fromTuple
   , ereverse
   , undir
@@ -33,6 +36,7 @@ module Data.Graphen
   , (<+>)
   , (<->)
   , outgoing
+  , incoming
   , distanceColor
     -- ** Graph types
   , GraphType(Directed, Undirected, Mixed, Empty)
@@ -133,6 +137,14 @@ data Edge v e
   | DirEdge v v e  -- ^ Construct a directed edge from one vertex to another
   deriving (Show, Read)
 
+instance Bifunctor Edge where
+  -- Map over the vertices
+  first f (UndirEdge v w e) = UndirEdge (f v) (f w) e
+  first f (DirEdge v w e) = DirEdge (f v) (f w) e
+  -- Map over the edge values
+  second f (UndirEdge v w e) = UndirEdge v w (f e)
+  second f (DirEdge v w e) = DirEdge v w (f e)
+
 -- | Check if an edge is directed
 isDir :: Edge v e -> Bool
 isDir DirEdge{} = True
@@ -175,6 +187,20 @@ leftVertex (DirEdge v _ _) = v
 rightVertex :: Edge v e -> v
 rightVertex (UndirEdge _ v _) = v
 rightVertex (DirEdge _ v _) = v
+
+-- | Return @True@, when the given vertex is a destination of the given `Edge`.
+isDestination :: Eq v => Edge v e -> v -> Bool
+isDestination (UndirEdge v w _) v' = v' == w || v' == v
+isDestination (DirEdge _ v _) v' = v == v'
+
+-- | Return @True@, when the given vertex is a source of the given `Edge`.
+isSource :: Eq v => Edge v e -> v -> Bool
+isSource (UndirEdge v w _) v' = v' == w || v' == v
+isSource (DirEdge v _ _) v' = v == v'
+
+-- | Return @True@, when the given `Edge` has same source and destination.
+isLoop :: Eq v => Edge v e -> Bool
+isLoop e = leftVertex e == rightVertex e
 
 -- | Extract the edge color/weight from an edge.
 color :: Edge v e -> e
@@ -320,8 +346,12 @@ x <-> y = fromEdges $ edges x \\ edges y
 
 -- | Find all outgoing edges from a given vertex
 outgoing :: (Graph gr, Eq v) => gr v e -> v -> [Edge v e]
-outgoing gr s
-  = filter (`edgeContainsVertex` s) $ edges gr
+outgoing gr v
+  = filter (`isSource` v) $ edges gr
+
+incoming :: (Graph gr, Eq v) => gr v e -> v -> [Edge v e]
+incoming gr v
+  = filter (`isDestination` v) $ edges gr
 
 -- | Type of the graph, specifically whether the graph is `Directed`,
 -- `Undirected`, `Mixed`, or `Empty`.
